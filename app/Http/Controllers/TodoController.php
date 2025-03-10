@@ -11,7 +11,7 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todos = Todo::all();
+        $todos = Todo::paginate(10);
         return view('displayTodo', ['data' => $todos]);
     }
 
@@ -83,7 +83,7 @@ class TodoController extends Controller
         $todos = Todo::query()
             ->where('subject', 'like', "%$query%")
             ->orWhere('description', 'like', "%$query%")
-            ->get();
+            ->paginate(10);
 
         return response()->json($this->renderTodosTable($todos));
     }

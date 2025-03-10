@@ -21,6 +21,9 @@
         .container {
             max-width: 1200px;
             margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
@@ -71,6 +74,7 @@
             display: flex;
             justify-content: center;
             margin-bottom: 30px;
+            width: 100%;
         }
 
         .search-container input {
@@ -94,6 +98,36 @@
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-content {
+            border-radius: 10px;
+        }
+
+        .custom-pagination {
+            margin: 0 2px;
+        }
+
+        .custom-pagination {
+            color: white;
+            
+        }
+
+        .custom-pagination .pagination {
+            display: flex;
+            
+            justify-content: center;
+        }
+        .custom-pagination div {
+            flex-direction: column;
         }
     </style>
 </head>
@@ -163,6 +197,11 @@
                 @endforeach
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <div class="d-flex custom-pagination">
+            {{ $data->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 
     <!-- Insert Modal -->
@@ -237,7 +276,7 @@
 
                 $('#todoUpdateModal input[name="subject"]').val(subject);
                 $('#todoUpdateModal input[name="description"]').val(description);
-                
+
                 $('#todoUpdateModal form').attr('action', '/update/' + id);
             });
 
