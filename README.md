@@ -8,6 +8,7 @@ This is a simple Todo application that allows users to create, read, update, and
 - **Update Todo**: Users can update the subject or description of an existing task.
 - **Delete Todo**: Users can remove a task from the list.
 - **Search Todo**: A search bar to filter tasks based on the subject or description.
+- **Pagination**: The tasks are paginated, allowing users to navigate through pages of Todos.
 - **Responsive Design**: The app is responsive and works well on both desktop and mobile devices.
 
 ## Tech Stack
@@ -78,6 +79,7 @@ The app will be accessible at `http://127.0.0.1:8000`.
 - **Update a Todo**: Click the "Update Todo" button next to an existing task to edit the subject or description.
 - **Delete a Todo**: Click the "Delete Todo" button to remove a task from the list.
 - **Search Todos**: Use the search bar to filter tasks based on subject or description.
+- **Pagination**: Use the pagination controls at the bottom of the Todo list to navigate between pages of tasks.
 
 ## File Structure
 
