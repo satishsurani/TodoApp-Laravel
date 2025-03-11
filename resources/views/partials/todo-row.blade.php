@@ -1,5 +1,5 @@
 <tr>
-    <td>{{ $todo->id }}</td>
+    <th><input type="checkbox" class="todo-checkbox" name="ids[]" value="{{ $todo->id }}" /></th>
     <td>{{ $todo->subject }}</td>
     <td>{{ $todo->description }}</td>
     <td>

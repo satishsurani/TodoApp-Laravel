@@ -96,4 +96,23 @@ class TodoController extends Controller
         }
         return $todoHtml;
     }
+
+    public function destroyMultiple(Request $request)
+    {
+        // Validate the request data
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:todos,id',
+        ]);
+
+        // Delete todos by their IDs
+        $todosDeleted = Todo::destroy($request->ids);
+
+        // Check if todos were deleted successfully
+        if ($todosDeleted) {
+            return redirect()->route('index')->with('success', 'Selected todos deleted successfully.');
+        } else {
+            return back()->with('error', 'Error while deleting selected todos.');
+        }
+    }
 }

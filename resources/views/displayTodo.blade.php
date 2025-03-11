@@ -14,34 +14,49 @@
     </script>
     <style>
         body {
-            background-color: #f4f7fa;
+            background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
         }
 
         .container {
             max-width: 1200px;
-            margin-top: 50px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         h1 {
-            color: #007bff;
-            font-size: 32px;
+            color: #3A5A40;
+            font-size: 36px;
             font-weight: bold;
             text-align: center;
+            margin-bottom: 5px;
         }
 
         .btn-primary,
         .btn-warning,
         .btn-danger {
-            border-radius: 20px;
+            border-radius: 50px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-warning:hover {
+            background-color: #e08e2c;
+        }
+
+        .btn-danger:hover {
+            background-color: #e02727;
         }
 
         .modal-header {
-            background-color: #007bff;
+            background-color: #28a745;
             color: white;
+            border-radius: 10px 10px 0 0;
         }
 
         .modal-footer .btn-secondary {
@@ -54,6 +69,7 @@
 
         .alert {
             margin-bottom: 20px;
+            border-radius: 10px;
         }
 
         .table thead {
@@ -64,6 +80,7 @@
         .table th,
         .table td {
             vertical-align: middle;
+            padding: 15px;
         }
 
         .form-control {
@@ -78,11 +95,12 @@
         }
 
         .search-container input {
-            width: 50%;
-            padding: 8px;
-            font-size: 14px;
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
             border-radius: 25px;
             border: 1px solid #ced4da;
+            transition: border 0.3s;
         }
 
         .search-container input:focus {
@@ -97,7 +115,6 @@
         .add-todo-btn-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
             width: 100%;
         }
 
@@ -107,27 +124,62 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
         .modal-content {
             border-radius: 10px;
         }
 
         .custom-pagination {
             margin: 0 2px;
-        }
-
-        .custom-pagination {
-            color: white;
-            
+            justify-content: center;
         }
 
         .custom-pagination .pagination {
             display: flex;
-            
             justify-content: center;
+            align-items: center;
         }
+
         .custom-pagination div {
             flex-direction: column;
+        }
+        
+        .pagination li {
+            margin: 5px;
+        }
+
+        .pagination li.active a {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .table td input[type="checkbox"] {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .search-container input {
+                width: 80%;
+            }
+
+            .table th,
+            .table td {
+                padding: 10px;
+            }
+
+            .add-todo-btn-container {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -159,44 +211,52 @@
 
         <!-- Centered Add Todo Button -->
         <div class="add-todo-btn-container">
-            <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal"
-                data-bs-target="#todoInsertModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#todoInsertModal">
                 Add Todo
             </button>
         </div>
-
-        <!-- Todo Table -->
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Subject</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data as $todo)
+        <form action="{{ url('deleteMultiple') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger mb-4" id="deleteSelectedButton" disabled>Delete Selected
+                Todos</button>
+            <table class="table table-bordered table-striped">
+                <thead>
                     <tr>
-                        <td>{{ $todo->id }}</td>
-                        <td>{{ $todo->subject }}</td>
-                        <td>{{ $todo->description }}</td>
-                        <td>
-                            <button data-id="{{ $todo->id }}" data-subject="{{ $todo->subject }}"
-                                data-description="{{ $todo->description }}" type="button"
-                                class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#todoUpdateModal">
-                                Update Todo
-                            </button>
-                            <form method="POST" action="{{ url('delete/' . $todo->id) }}" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm ms-2">Delete Todo</button>
-                            </form>
-                        </td>
+                        <th>Select</th>
+                        <th>Subject</th>
+                        <th>Description</th>
+                        <th>Actions</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($data as $todo)
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="todo-checkbox" name="ids[]"
+                                    value="{{ $todo->id }}" />
+                            </td>
+                            <td>{{ $todo->subject }}</td>
+                            <td>{{ $todo->description }}</td>
+                            <td>
+                                <button data-id="{{ $todo->id }}" data-subject="{{ $todo->subject }}"
+                                    data-description="{{ $todo->description }}" type="button"
+                                    class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#todoUpdateModal">
+                                    Update Todo
+                                </button>
+                                <form method="POST" action="{{ url('delete/' . $todo->id) }}"
+                                    style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm ms-2">Delete Todo</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </form>
 
         <!-- Pagination -->
         <div class="d-flex custom-pagination">
@@ -297,26 +357,22 @@
                         },
                         success: function(response) {
                             $('tbody').html(response);
-
-                            $('[data-bs-toggle="modal"][data-bs-target="#todoUpdateModal"]')
-                                .on('click', function() {
-                                    let subject = $(this).data('subject');
-                                    let description = $(this).data('description');
-                                    let id = $(this).data('id');
-
-                                    $('#todoUpdateModal input[name="subject"]').val(
-                                        subject);
-                                    $('#todoUpdateModal input[name="description"]')
-                                        .val(description);
-                                    $('#todoUpdateModal form').attr('action',
-                                        '/update/' + id);
-                                });
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX Error: ' + status + ' ' + error);
                         }
                     });
                 }, 300);
+            });
+
+            // Enable/Disable delete button based on checkbox selection
+            $('.todo-checkbox').on('change', function() {
+                let selectedTodos = $('.todo-checkbox:checked').length;
+                if (selectedTodos > 0) {
+                    $('#deleteSelectedButton').prop('disabled', false);
+                } else {
+                    $('#deleteSelectedButton').prop('disabled', true);
+                }
             });
         });
     </script>
